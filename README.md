@@ -1,6 +1,6 @@
 # Model.md
 
-Claude Code 的自訂 Agents 與 Skills 設定集合，針對 WordPress 與網頁開發工作流程優化。
+Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPress 與網頁開發工作流程優化。
 
 ## 結構
 
@@ -36,17 +36,106 @@ Model.md/
 
 ## 安裝方式
 
-將此 repo clone 至本機，並在 Claude Code 設定中指定對應路徑：
+先 clone 此 repo 至本機：
 
 ```bash
-git clone https://github.com/jasonwang-tw/Model.md.git
+git clone https://github.com/jasonwang-tw/Model.md.git ~/Model.md
 ```
 
-在 `~/.claude/settings.json` 中加入：
+---
 
-```json
-{
-  "agentDirectories": ["/path/to/Model.md/agents"],
-  "skillDirectories": ["/path/to/Model.md/skills"]
-}
+### Claude Code
+
+官方文件：[Skills](https://code.claude.com/docs/en/skills) · [Sub-agents](https://code.claude.com/docs/zh-TW/sub-agents) · [Memory](https://code.claude.com/docs/zh-TW/memory)
+
+#### 路徑說明
+
+| 類型 | 個人（所有專案） | 專案（僅當前專案） |
+|------|-----------------|-----------------|
+| Skills | `~/.claude/skills/<name>/SKILL.md` | `.claude/skills/<name>/SKILL.md` |
+| Agents | `~/.claude/agents/<name>.md` | `.claude/agents/<name>.md` |
+| 記憶指令 | `~/.claude/CLAUDE.md` | `./CLAUDE.md` 或 `.claude/CLAUDE.md` |
+
+#### 個人安裝（推薦，適用所有專案）
+
+```bash
+# 建立目錄
+mkdir -p ~/.claude/skills ~/.claude/agents
+
+# 建立 symlink（Skills）
+for dir in ~/Model.md/skills/*/; do
+  ln -s "$dir" ~/.claude/skills/$(basename "$dir")
+done
+
+# 建立 symlink（Agents）
+for f in ~/Model.md/agents/*.md; do
+  ln -s "$f" ~/.claude/agents/$(basename "$f")
+done
 ```
+
+#### 專案安裝（僅當前專案）
+
+```bash
+# 在專案根目錄執行
+mkdir -p .claude/skills .claude/agents
+
+for dir in ~/Model.md/skills/*/; do
+  ln -s "$dir" .claude/skills/$(basename "$dir")
+done
+
+for f in ~/Model.md/agents/*.md; do
+  ln -s "$f" .claude/agents/$(basename "$f")
+done
+```
+
+---
+
+### Cursor
+
+官方文件：[Skills](https://cursor.com/docs/skills) · [Subagents](https://cursor.com/docs/subagents) · [Rules](https://cursor.com/docs/rules)
+
+#### 路徑說明
+
+| 類型 | 個人（所有專案） | 專案（僅當前專案） |
+|------|-----------------|-----------------|
+| Skills | `~/.cursor/skills/<name>/SKILL.md` | `.cursor/skills/<name>/SKILL.md` |
+| Agents | `~/.cursor/agents/<name>.md` | `.cursor/agents/<name>.md` |
+| Rules | — | `.cursor/rules/<name>.md` |
+
+> Cursor 也相容 `.claude/skills/`、`.claude/agents/`、`.agents/skills/` 路徑，因此若已做 Claude Code 個人安裝，Cursor 可直接讀取 `~/.claude/` 下的內容。
+
+#### 個人安裝
+
+```bash
+mkdir -p ~/.cursor/skills ~/.cursor/agents
+
+for dir in ~/Model.md/skills/*/; do
+  ln -s "$dir" ~/.cursor/skills/$(basename "$dir")
+done
+
+for f in ~/Model.md/agents/*.md; do
+  ln -s "$f" ~/.cursor/agents/$(basename "$f")
+done
+```
+
+#### 專案安裝
+
+```bash
+# 在專案根目錄執行
+mkdir -p .cursor/skills .cursor/agents
+
+for dir in ~/Model.md/skills/*/; do
+  ln -s "$dir" .cursor/skills/$(basename "$dir")
+done
+
+for f in ~/Model.md/agents/*.md; do
+  ln -s "$f" .cursor/agents/$(basename "$f")
+done
+```
+
+#### 從 Cursor UI 安裝（Settings > Rules）
+
+1. 開啟 Cursor Settings（`Cmd+Shift+J`）
+2. 前往 **Rules → Project Rules**
+3. 點擊 **Add Rule → Remote Rule (GitHub)**
+4. 輸入 `https://github.com/jasonwang-tw/Model.md`
