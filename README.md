@@ -8,6 +8,7 @@ Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPre
 Model.md/
 ├── agents/
 │   ├── debugger.md       # 自動除錯專家
+│   ├── tester.md         # WordPress QA 測試專家
 │   └── ui-designer.md    # UI 介面設計專家
 └── skills/
     ├── rest-api-integration/   # REST API 串接
@@ -22,6 +23,7 @@ Model.md/
 | Agent | 說明 |
 |-------|------|
 | `debugger` | 專業除錯專家，自動檢查日誌、分析系統狀態、排查錯誤與異常行為 |
+| `tester` | WordPress QA 測試專家，自動執行靜態分析、安全性掃描與 Docker 環境功能測試 |
 | `ui-designer` | UI 介面設計專家，修復跑版問題，支援 desktop / tablet / mobile / APP |
 
 ## Skills
