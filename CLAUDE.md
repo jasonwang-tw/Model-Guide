@@ -77,12 +77,21 @@
 |---------|---------|
 | 遇到錯誤、異常行為、網站故障、需要查看 log | Agent: `debugger` |
 | UI 跑版、樣式問題、RWD 排版異常、CSS 問題 | Agent: `ui-designer` |
-| WordPress 外掛/主題開發完成、需要驗證品質 | Agent: `tester` |
+| 任何平台開發完成、需要驗證品質 | Agent: `tester` |
+| 新專案架構規劃、技術選型、開發引導 | Agent: `developer` |
 | 開發或串接 REST API、WP REST API、WooCommerce API | Skill: `rest-api-integration` |
 | WooCommerce 產品、訂單、購物車、結帳、Webhook 開發 | Skill: `woocommerce-dev` |
 | 建立或修改 WordPress 外掛 | Skill: `wordpress-plugin-dev` |
 | 建立或修改 WordPress 主題、模板檔案 | Skill: `wordpress-theme-dev` |
 | PageSpeed 分數低、網站效能優化、Core Web Vitals | Skill: `wp-performance-optimization` |
+| 開發 Chrome 插件 / Edge 插件 | Skill: `chrome-extension-dev` |
+| 開發 iOS App | Skill: `ios-dev` |
+| 開發 macOS App | Skill: `macos-dev` |
+| 開發網站（電商/部落格，非 WordPress） | Skill: `website-dev` |
+| WordPress 外掛/主題測試 | Skill: `test-wp` |
+| Chrome 插件測試 | Skill: `test-chrome` |
+| iOS / macOS App 測試 | Skill: `test-apple` |
+| 網站（Next.js/Astro/Web）測試 | Skill: `test-web` |
 | 開始新專案、專案缺少 README | Skill: `project-init` |
 
 ### 執行原則

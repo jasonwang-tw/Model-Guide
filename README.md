@@ -10,7 +10,7 @@ Model.md/
 ├── agents/
 │   ├── debugger.md                   # 自動除錯專家
 │   ├── developer.md                  # 專案架構規劃與開發引導
-│   ├── tester.md                     # WordPress QA 測試專家
+│   ├── tester.md                     # 跨平台 QA 測試統籌
 │   └── ui-designer.md                # UI 介面設計專家
 └── skills/
     ├── chrome-extension-dev/         # Chrome 插件開發
@@ -18,6 +18,10 @@ Model.md/
     ├── macos-dev/                    # macOS App 開發
     ├── project-init/                 # 新專案初始化
     ├── rest-api-integration/         # REST API 串接
+    ├── test-apple/                   # iOS / macOS 測試
+    ├── test-chrome/                  # Chrome 插件測試
+    ├── test-web/                     # 網站測試（Next.js/Astro/Web）
+    ├── test-wp/                      # WordPress 測試
     ├── website-dev/                  # 網站開發（電商/部落格）
     ├── woocommerce-dev/              # WooCommerce 開發
     ├── wordpress-plugin-dev/         # WordPress 外掛開發
@@ -31,7 +35,7 @@ Model.md/
 |-------|------|
 | `debugger` | 專業除錯專家，自動檢查日誌、分析系統狀態、排查錯誤與異常行為 |
 | `developer` | 專案架構規劃與開發引導，支援 Chrome 插件、WP、網站、iOS、macOS |
-| `tester` | WordPress QA 測試專家，自動執行靜態分析、安全性掃描與 Docker 環境功能測試 |
+| `tester` | 跨平台 QA 測試統籌，自動偵測平台並調用對應測試 Skill（WP/Chrome/iOS/macOS/Web） |
 | `ui-designer` | UI 介面設計專家，修復跑版問題，支援 desktop / tablet / mobile / APP |
 
 ## Skills
@@ -43,6 +47,10 @@ Model.md/
 | `macos-dev` | macOS App 開發，涵蓋 SwiftUI for macOS、選單列 App、AppKit 整合 |
 | `project-init` | 新專案初始化，自動建立 README 與版號；WP 主題/外掛可加入開發者資訊 |
 | `rest-api-integration` | REST API 串接整合，涵蓋認證、HTTP 請求、WP REST API、WooCommerce API |
+| `test-apple` | iOS / macOS App QA 測試，涵蓋 Swift 掃描、Xcode 編譯、單元測試 |
+| `test-chrome` | Chrome 插件 QA 測試，涵蓋 MV3 相容性、CSP、權限最小化驗證 |
+| `test-web` | 網站 QA 測試（Next.js/Astro/Web），涵蓋 TS 型別、建置、SEO 驗證 |
+| `test-wp` | WordPress QA 測試，涵蓋 PHP 語法、安全性掃描、wp-env 環境執行 |
 | `website-dev` | 網站開發，涵蓋 Next.js/Astro、電商（Stripe/ECPay）、部落格、SEO |
 | `woocommerce-dev` | WooCommerce 電商開發，涵蓋產品、訂單、購物車、結帳、Webhook |
 | `wordpress-plugin-dev` | WordPress 外掛開發，涵蓋 Settings API、Shortcode、CPT、WP-Cron |
