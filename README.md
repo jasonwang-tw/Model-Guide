@@ -9,11 +9,16 @@ Model.md/
 ├── CLAUDE.md                         # 全域規則（版號/README 自動管理）
 ├── agents/
 │   ├── debugger.md                   # 自動除錯專家
+│   ├── developer.md                  # 專案架構規劃與開發引導
 │   ├── tester.md                     # WordPress QA 測試專家
 │   └── ui-designer.md                # UI 介面設計專家
 └── skills/
+    ├── chrome-extension-dev/         # Chrome 插件開發
+    ├── ios-dev/                      # iOS App 開發
+    ├── macos-dev/                    # macOS App 開發
     ├── project-init/                 # 新專案初始化
     ├── rest-api-integration/         # REST API 串接
+    ├── website-dev/                  # 網站開發（電商/部落格）
     ├── woocommerce-dev/              # WooCommerce 開發
     ├── wordpress-plugin-dev/         # WordPress 外掛開發
     ├── wordpress-theme-dev/          # WordPress 主題開發
@@ -25,6 +30,7 @@ Model.md/
 | Agent | 說明 |
 |-------|------|
 | `debugger` | 專業除錯專家，自動檢查日誌、分析系統狀態、排查錯誤與異常行為 |
+| `developer` | 專案架構規劃與開發引導，支援 Chrome 插件、WP、網站、iOS、macOS |
 | `tester` | WordPress QA 測試專家，自動執行靜態分析、安全性掃描與 Docker 環境功能測試 |
 | `ui-designer` | UI 介面設計專家，修復跑版問題，支援 desktop / tablet / mobile / APP |
 
@@ -32,8 +38,12 @@ Model.md/
 
 | Skill | 說明 |
 |-------|------|
+| `chrome-extension-dev` | Chrome 插件開發（MV3），涵蓋 Service Worker、Content Script、Chrome APIs |
+| `ios-dev` | iOS App 開發，涵蓋 SwiftUI、MVVM、網路請求、SwiftData、App Store 發布 |
+| `macos-dev` | macOS App 開發，涵蓋 SwiftUI for macOS、選單列 App、AppKit 整合 |
 | `project-init` | 新專案初始化，自動建立 README 與版號；WP 主題/外掛可加入開發者資訊 |
 | `rest-api-integration` | REST API 串接整合，涵蓋認證、HTTP 請求、WP REST API、WooCommerce API |
+| `website-dev` | 網站開發，涵蓋 Next.js/Astro、電商（Stripe/ECPay）、部落格、SEO |
 | `woocommerce-dev` | WooCommerce 電商開發，涵蓋產品、訂單、購物車、結帳、Webhook |
 | `wordpress-plugin-dev` | WordPress 外掛開發，涵蓋 Settings API、Shortcode、CPT、WP-Cron |
 | `wordpress-theme-dev` | WordPress 主題開發，涵蓋模板層級、鉤子、模板標籤 |
