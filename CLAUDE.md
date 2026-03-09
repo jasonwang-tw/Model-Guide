@@ -51,3 +51,29 @@
 ---
 
 > 手動初始化：輸入 `/project-init`
+
+---
+
+## Skills / Agents 自動調用
+
+根據對話內容**主動判斷**並**自動調用**對應的 Skills 或 Agents，不需使用者手動輸入。
+
+### 觸發對照表
+
+| 對話情境 | 自動調用 |
+|---------|---------|
+| 遇到錯誤、異常行為、網站故障、需要查看 log | Agent: `debugger` |
+| UI 跑版、樣式問題、RWD 排版異常、CSS 問題 | Agent: `ui-designer` |
+| WordPress 外掛/主題開發完成、需要驗證品質 | Agent: `tester` |
+| 開發或串接 REST API、WP REST API、WooCommerce API | Skill: `rest-api-integration` |
+| WooCommerce 產品、訂單、購物車、結帳、Webhook 開發 | Skill: `woocommerce-dev` |
+| 建立或修改 WordPress 外掛 | Skill: `wordpress-plugin-dev` |
+| 建立或修改 WordPress 主題、模板檔案 | Skill: `wordpress-theme-dev` |
+| PageSpeed 分數低、網站效能優化、Core Web Vitals | Skill: `wp-performance-optimization` |
+| 開始新專案、專案缺少 README | Skill: `project-init` |
+
+### 執行原則
+
+- **不詢問，直接調用**：判斷明確時直接執行，不先問使用者是否要調用
+- **可複合調用**：同一個任務若符合多個情境，同時調用所有相關的 Skills/Agents
+- **調用後告知**：執行前簡短說明正在調用哪個 Skill/Agent 及原因（一句話即可）
