@@ -39,6 +39,16 @@ Model.md/
 | `wordpress-theme-dev` | WordPress 主題開發，涵蓋模板層級、鉤子、模板標籤 |
 | `wp-performance-optimization` | WordPress 效能優化，根據 PageSpeed 數據診斷並修復前後端效能問題 |
 
+## CLAUDE.md 全域規則
+
+`CLAUDE.md` 定義了三條全域行為規則，安裝後對所有專案自動生效：
+
+| 規則 | 說明 |
+|------|------|
+| 版號與 README 管理 | 每次程式碼變更時，依 Semantic Versioning 自動升版並更新 Changelog |
+| 新專案自動偵測 | 對話開始時若偵測到缺少 README，自動執行 `project-init` 初始化 |
+| Skills / Agents 自動調用 | 根據對話情境自動判斷並調用對應的 Skill 或 Agent，無需手動輸入 |
+
 ## 安裝方式
 
 先 clone 此 repo 至本機：
