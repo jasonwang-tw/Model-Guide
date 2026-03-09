@@ -6,15 +6,17 @@ Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPre
 
 ```
 Model.md/
+├── CLAUDE.md                         # 全域規則（版號/README 自動管理）
 ├── agents/
-│   ├── debugger.md       # 自動除錯專家
-│   ├── tester.md         # WordPress QA 測試專家
-│   └── ui-designer.md    # UI 介面設計專家
+│   ├── debugger.md                   # 自動除錯專家
+│   ├── tester.md                     # WordPress QA 測試專家
+│   └── ui-designer.md                # UI 介面設計專家
 └── skills/
-    ├── rest-api-integration/   # REST API 串接
-    ├── woocommerce-dev/        # WooCommerce 開發
-    ├── wordpress-plugin-dev/   # WordPress 外掛開發
-    ├── wordpress-theme-dev/    # WordPress 主題開發
+    ├── project-init/                 # 新專案初始化
+    ├── rest-api-integration/         # REST API 串接
+    ├── woocommerce-dev/              # WooCommerce 開發
+    ├── wordpress-plugin-dev/         # WordPress 外掛開發
+    ├── wordpress-theme-dev/          # WordPress 主題開發
     └── wp-performance-optimization/  # WordPress 效能優化
 ```
 
@@ -30,6 +32,7 @@ Model.md/
 
 | Skill | 說明 |
 |-------|------|
+| `project-init` | 新專案初始化，自動建立 README 與版號；WP 主題/外掛可加入開發者資訊 |
 | `rest-api-integration` | REST API 串接整合，涵蓋認證、HTTP 請求、WP REST API、WooCommerce API |
 | `woocommerce-dev` | WooCommerce 電商開發，涵蓋產品、訂單、購物車、結帳、Webhook |
 | `wordpress-plugin-dev` | WordPress 外掛開發，涵蓋 Settings API、Shortcode、CPT、WP-Cron |
@@ -73,6 +76,9 @@ done
 for f in ~/Model.md/agents/*.md; do
   ln -s "$f" ~/.claude/agents/$(basename "$f")
 done
+
+# 複製 CLAUDE.md 全域規則（或手動合併至現有 CLAUDE.md）
+cp ~/Model.md/CLAUDE.md ~/.claude/CLAUDE.md
 ```
 
 #### 專案安裝（僅當前專案）
