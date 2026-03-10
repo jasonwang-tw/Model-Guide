@@ -99,3 +99,55 @@
 - **不詢問，直接調用**：判斷明確時直接執行，不先問使用者是否要調用
 - **可複合調用**：同一個任務若符合多個情境，同時調用所有相關的 Skills/Agents
 - **調用後告知**：執行前簡短說明正在調用哪個 Skill/Agent 及原因（一句話即可）
+
+---
+
+## Current Session Usage 自動監控
+
+### 工具
+
+監控腳本：`D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.py`
+- 校準基準：Pro 方案 ≈ 1,327,000 tokens / 5hr session（實測 942,168 tokens = 71%）
+- exit code `2` = critical（≥95%）、exit code `0` = 正常或已重置
+
+### 完整自動化流程
+
+執行長時間任務時，採用 **main agent 監控 + subagent 執行** 架構：
+
+1. **派發任務給 subagent（background）**
+   - 使用 `Agent tool`（`run_in_background: true`）執行實際任務
+
+2. **Main agent 每 5 分鐘執行監控**
+   ```bash
+   python3 "D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.py"
+   ```
+   - exit code `0` → 繼續等待
+   - exit code `2`（≥95%）→ 執行步驟 3
+
+3. **達到 95% → 通知 subagent 暫停並總結**
+   - 指示 subagent 停止目前工具呼叫
+   - 以條列方式輸出：
+     ```
+     ## Current Session Usage 已達 95%，任務暫停
+
+     ### 已完成
+     - [具體完成的項目]
+
+     ### 尚未完成
+     - [具體剩餘的任務]
+     ```
+
+4. **每 30 分鐘監控重置狀態**
+   - 執行同一監控腳本
+   - `pct < 5%` 或 `status: no_active_block` → session 已重置 → 執行步驟 5
+
+5. **重置後通知 subagent 接續任務**
+   - 將「尚未完成」清單交給 subagent 繼續執行
+
+6. **重複步驟 2–5，直到任務完全完成**
+
+### 執行原則
+
+- **全自動**：整個流程不需使用者介入或確認
+- **無縫接續**：重置後直接從未完成清單繼續，不重新說明背景
+- **立即停止**：達到 95% 時不再執行任何工具呼叫

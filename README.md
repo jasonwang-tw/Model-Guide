@@ -7,6 +7,7 @@ Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPre
 ```
 Model.md/
 ├── CLAUDE.md                         # 全域規則（版號/README 自動管理）
+├── claude_usage_monitor.py           # Current session usage 監控腳本
 ├── agents/
 │   ├── debugger.md                   # 自動除錯專家
 │   ├── developer.md                  # 專案架構規劃與開發引導
@@ -66,6 +67,7 @@ Model.md/
 | 版號與 README 管理 | 每次程式碼變更時，依 Semantic Versioning 自動升版並更新 Changelog |
 | 新專案自動偵測 | 對話開始時若偵測到缺少 README，自動執行 `project-init` 初始化 |
 | Skills / Agents 自動調用 | 根據對話情境自動判斷並調用對應的 Skill 或 Agent，無需手動輸入 |
+| Current Session Usage 監控 | 長時間任務時自動監控用量，達 95% 暫停並總結，重置後自動接續 |
 
 ## 安裝方式
 
@@ -175,3 +177,81 @@ done
 2. 前往 **Rules → Project Rules**
 3. 點擊 **Add Rule → Remote Rule (GitHub)**
 4. 輸入 `https://github.com/jasonwang-tw/Model.md`
+
+---
+
+## Current Session Usage 監控腳本
+
+`claude_usage_monitor.py` 自動監控 Claude Code 的 current session usage，搭配 CLAUDE.md 的自動化流程，讓長時間任務在用量達 95% 時自動暫停並總結，重置後自動接續。
+
+### 前置需求
+
+- Python 3.x
+- Node.js + npx（用於執行 `ccusage`）
+
+### 安裝
+
+```bash
+# clone 後將腳本複製至工作目錄（或直接使用 repo 路徑）
+cp ~/Model.md/claude_usage_monitor.py ~/claude_usage_monitor.py
+```
+
+### 校準（首次使用）
+
+腳本內建 Pro 方案校準值。若使用其他方案，需重新校準：
+
+1. 執行 `/usage` 記下目前百分比（例：71%）
+2. 執行以下指令取得目前 token 數：
+   ```bash
+   npx ccusage@latest blocks --json | python3 -c "
+   import json,sys; d=json.load(sys.stdin)
+   b=[x for x in d['blocks'] if x.get('isActive') and not x.get('isGap')]
+   print('tokens:', b[0]['totalTokens']) if b else print('no active block')
+   "
+   ```
+3. 計算上限：`tokens ÷ 百分比 = 方案上限`
+4. 更新腳本第 13 行的 `PRO_SESSION_LIMIT`
+
+### 使用方式
+
+```bash
+python3 claude_usage_monitor.py
+```
+
+**輸出範例：**
+
+```json
+{
+  "status": "ok",
+  "pct": 45.2,
+  "tokens": 599754,
+  "limit": 1327000,
+  "remaining_minutes": 180
+}
+[OK] Current session usage: 45.2%
+```
+
+**Exit code：**
+
+| Code | 意義 |
+|------|------|
+| `0` | 正常（< 95%）或已重置 |
+| `2` | Critical（≥ 95%），應暫停任務 |
+
+### 自動化流程（搭配 CLAUDE.md）
+
+CLAUDE.md 已定義完整的自動監控規則：
+
+1. 長時間任務由 **subagent** 執行（`run_in_background: true`）
+2. **Main agent** 每 5 分鐘執行腳本監控用量
+3. 達 95% → 通知 subagent 暫停，條列輸出已完成／未完成項目
+4. 每 30 分鐘偵測重置狀態（pct < 5% 視為已重置）
+5. 重置後自動通知 subagent 接續任務
+6. 重複直到任務完成
+
+## Changelog
+
+## [1.1.0] - 2026-03-10
+### Added
+- `claude_usage_monitor.py`：Current session usage 自動監控腳本（Pro 方案校準）
+- CLAUDE.md：新增 Current Session Usage 自動監控規則（main agent 監控 + subagent 執行架構）
