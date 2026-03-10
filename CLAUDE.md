@@ -117,7 +117,7 @@
 1. **派發任務給 subagent（background）**
    - 使用 `Agent tool`（`run_in_background: true`）執行實際任務
 
-2. **Main agent 每 5 分鐘執行監控**
+2. **Main agent 每 1 分鐘執行監控**
    ```bash
    python3 "D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.py"
    ```

@@ -243,7 +243,7 @@ python3 claude_usage_monitor.py
 CLAUDE.md 已定義完整的自動監控規則：
 
 1. 長時間任務由 **subagent** 執行（`run_in_background: true`）
-2. **Main agent** 每 5 分鐘執行腳本監控用量
+2. **Main agent** 每 1 分鐘執行腳本監控用量
 3. 達 95% → 通知 subagent 暫停，條列輸出已完成／未完成項目
 4. 每 30 分鐘偵測重置狀態（pct < 5% 視為已重置）
 5. 重置後自動通知 subagent 接續任務
