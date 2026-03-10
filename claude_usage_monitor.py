@@ -6,6 +6,7 @@ Claude Code Usage Monitor
 """
 
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -14,7 +15,10 @@ PRO_SESSION_LIMIT = 1_327_000  # 校準自 942168 tokens = 71%
 WARN_THRESHOLD = 0.95           # 95% 警戒線
 RESET_THRESHOLD = 0.05          # 5% 以下視為已重置
 
-NPX_PATH = r"C:\Program Files\nodejs\npx.cmd"
+NPX_PATH = shutil.which("npx") or shutil.which("npx.cmd")
+if not NPX_PATH:
+    print("ERROR: npx not found. Please install Node.js.")
+    sys.exit(1)
 
 def get_active_block():
     result = subprocess.run(
