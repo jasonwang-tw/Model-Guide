@@ -1,11 +1,11 @@
-# Model.md
+# Model-Guide
 
 Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPress 與網頁開發工作流程優化。
 
 ## 結構
 
 ```
-Model.md/
+Model-Guide/
 ├── CLAUDE.md                         # 全域規則（版號/README 自動管理）
 ├── claude_usage_monitor.py           # Current session usage 監控腳本
 ├── agents/
@@ -74,7 +74,7 @@ Model.md/
 先 clone 此 repo 至本機：
 
 ```bash
-git clone https://github.com/jasonwang-tw/Model.md.git ~/Model.md
+git clone https://github.com/jasonwang-tw/Model-Guide.git ~/Model-Guide
 ```
 
 ---
@@ -98,17 +98,17 @@ git clone https://github.com/jasonwang-tw/Model.md.git ~/Model.md
 mkdir -p ~/.claude/skills ~/.claude/agents
 
 # 建立 symlink（Skills）
-for dir in ~/Model.md/skills/*/; do
+for dir in ~/Model-Guide/skills/*/; do
   ln -s "$dir" ~/.claude/skills/$(basename "$dir")
 done
 
 # 建立 symlink（Agents）
-for f in ~/Model.md/agents/*.md; do
+for f in ~/Model-Guide/agents/*.md; do
   ln -s "$f" ~/.claude/agents/$(basename "$f")
 done
 
 # 複製 CLAUDE.md 全域規則（或手動合併至現有 CLAUDE.md）
-cp ~/Model.md/CLAUDE.md ~/.claude/CLAUDE.md
+cp ~/Model-Guide/CLAUDE.md ~/.claude/CLAUDE.md
 ```
 
 #### 專案安裝（僅當前專案）
@@ -117,11 +117,11 @@ cp ~/Model.md/CLAUDE.md ~/.claude/CLAUDE.md
 # 在專案根目錄執行
 mkdir -p .claude/skills .claude/agents
 
-for dir in ~/Model.md/skills/*/; do
+for dir in ~/Model-Guide/skills/*/; do
   ln -s "$dir" .claude/skills/$(basename "$dir")
 done
 
-for f in ~/Model.md/agents/*.md; do
+for f in ~/Model-Guide/agents/*.md; do
   ln -s "$f" .claude/agents/$(basename "$f")
 done
 ```
@@ -147,11 +147,11 @@ done
 ```bash
 mkdir -p ~/.cursor/skills ~/.cursor/agents
 
-for dir in ~/Model.md/skills/*/; do
+for dir in ~/Model-Guide/skills/*/; do
   ln -s "$dir" ~/.cursor/skills/$(basename "$dir")
 done
 
-for f in ~/Model.md/agents/*.md; do
+for f in ~/Model-Guide/agents/*.md; do
   ln -s "$f" ~/.cursor/agents/$(basename "$f")
 done
 ```
@@ -162,11 +162,11 @@ done
 # 在專案根目錄執行
 mkdir -p .cursor/skills .cursor/agents
 
-for dir in ~/Model.md/skills/*/; do
+for dir in ~/Model-Guide/skills/*/; do
   ln -s "$dir" .cursor/skills/$(basename "$dir")
 done
 
-for f in ~/Model.md/agents/*.md; do
+for f in ~/Model-Guide/agents/*.md; do
   ln -s "$f" .cursor/agents/$(basename "$f")
 done
 ```
@@ -176,7 +176,7 @@ done
 1. 開啟 Cursor Settings（`Cmd+Shift+J`）
 2. 前往 **Rules → Project Rules**
 3. 點擊 **Add Rule → Remote Rule (GitHub)**
-4. 輸入 `https://github.com/jasonwang-tw/Model.md`
+4. 輸入 `https://github.com/jasonwang-tw/Model-Guide`
 
 ---
 
@@ -193,7 +193,7 @@ done
 
 ```bash
 # clone 後將腳本複製至工作目錄（或直接使用 repo 路徑）
-cp ~/Model.md/claude_usage_monitor.py ~/claude_usage_monitor.py
+cp ~/Model-Guide/claude_usage_monitor.py ~/claude_usage_monitor.py
 ```
 
 ### 校準（首次使用）
