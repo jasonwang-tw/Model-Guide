@@ -27,6 +27,7 @@ Model-Guide/
     ├── woocommerce-dev/              # WooCommerce 開發
     ├── wordpress-plugin-dev/         # WordPress 外掛開發
     ├── wordpress-theme-dev/          # WordPress 主題開發
+    ├── service-impact-assessment/    # 服務安裝/刪除影響評估
     └── wp-performance-optimization/  # WordPress 效能優化
 ```
 
@@ -54,6 +55,7 @@ Model-Guide/
 | `test-wp` | WordPress QA 測試，涵蓋 PHP 語法、安全性掃描、wp-env 環境執行 |
 | `website-dev` | 網站開發，涵蓋 Next.js/Astro、電商（Stripe/ECPay）、部落格、SEO |
 | `woocommerce-dev` | WooCommerce 電商開發，涵蓋產品、訂單、購物車、結帳、Webhook |
+| `service-impact-assessment` | 服務安裝/刪除/修改前的影響評估，涵蓋優缺點、環境影響、相依衝突、移除可行性 |
 | `wordpress-plugin-dev` | WordPress 外掛開發，涵蓋 Settings API、Shortcode、CPT、WP-Cron |
 | `wordpress-theme-dev` | WordPress 主題開發，涵蓋模板層級、鉤子、模板標籤 |
 | `wp-performance-optimization` | WordPress 效能優化，根據 PageSpeed 數據診斷並修復前後端效能問題 |
@@ -250,6 +252,10 @@ CLAUDE.md 已定義完整的自動監控規則：
 6. 重複直到任務完成
 
 ## Changelog
+
+## [1.2.0] - 2026-03-11
+### Added
+- `skills/service-impact-assessment`：服務安裝/刪除/修改前的深度影響評估 Skill
 
 ## [1.1.0] - 2026-03-10
 ### Added
