@@ -5,6 +5,66 @@ description: WordPress 外掛開發指南。涵蓋外掛結構、Settings API、
 
 # WordPress 外掛開發指南
 
+## Icon 使用規範
+
+**禁止使用 emoji 代替 icon**。依使用場景選擇對應 icon 系統：
+
+| 場景 | Icon 系統 | 說明 |
+|------|---------|------|
+| **wp-admin 後台 UI** | [Dashicons](https://developer.wordpress.org/resource/dashicons/)（WP 內建） | 已隨 wp-admin 載入，零額外依賴，視覺與後台一致 |
+| **前台輸出**（Shortcode / Block 前端 / 自訂頁面） | [Lucide](https://lucide.dev/) | 輕量 SVG，適合前台自訂 UI |
+| **既有專案** | 先偵測現有 icon 庫並延續 | 見下方偵測指令 |
+
+### 既有專案：先偵測現有 icon 庫
+
+```bash
+# 檢查 PHP / enqueue 是否已引入 icon 庫
+grep -rE "dashicons|lucide|fontawesome|heroicons" *.php admin/ --include="*.php" 2>/dev/null | head -5
+
+# 檢查 package.json
+cat package.json 2>/dev/null | grep -E "lucide|heroicons|@fortawesome|feather-icons"
+```
+
+> **找不到合適 icon 時**：若在既有 icon 庫中找不到符合情境的圖示，**主動告知開發者**，並推薦替代選項，由開發者決定。
+
+### Dashicons 使用範例（wp-admin 預設）
+
+```php
+// Dashicons 已自動載入於 wp-admin，直接使用即可
+// 在後台 HTML 中：
+// <span class="dashicons dashicons-admin-settings"></span>
+// <span class="dashicons dashicons-search"></span>
+// <span class="dashicons dashicons-yes-alt"></span>
+
+// CPT menu_icon 同樣使用 Dashicons
+'menu_icon' => 'dashicons-book'
+
+// 瀏覽所有圖示：https://developer.wordpress.org/resource/dashicons/
+```
+
+### Lucide 使用範例（前台輸出）
+
+```php
+// 前台 enqueue Lucide CDN
+function my_plugin_enqueue_frontend() {
+    wp_enqueue_script(
+        'lucide',
+        'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
+        [], null, true
+    );
+}
+add_action('wp_enqueue_scripts', 'my_plugin_enqueue_frontend');
+```
+
+```html
+<!-- 前台 Shortcode / Block 輸出 -->
+<i data-lucide="search"></i>
+<i data-lucide="arrow-right"></i>
+<script>lucide.createIcons();</script>
+```
+
+---
+
 ## 外掛結構
 
 ```php
@@ -283,36 +343,138 @@ function my_plugin_get_records($status = 'pending') {
 }
 ```
 
-## CSS 工具鏈（Admin UI / 前台樣式）
+## CSS 工具鏈
 
-### 既有專案：優先偵測現有 UI 工具
+依場景選擇對應的樣式方案：
 
-**新增功能至既有外掛前，先執行以下偵測，延續現有工具；若無則使用預設（Tailwind + PostCSS + SCSS）。**
+| 場景 | 預設做法 | 原因 |
+|------|---------|------|
+| **wp-admin 後台 UI** | WP 原生樣式 | 避免 Tailwind Preflight 破壞後台既有樣式，零額外依賴 |
+| **複雜後台 UI（React）** | `@wordpress/components` | Gutenberg 元件庫，與 Block Editor 風格一致 |
+| **前台輸出**（Shortcode / Block 前端） | Tailwind + PostCSS + SCSS | 前台不受 wp-admin 限制，適合自訂 UI |
+
+---
+
+### 後台 UI：WP 原生樣式（預設）
+
+> WP admin 已內建完整 UI class，**無需引入任何外部 CSS 框架**。
+
+```php
+// 常用 WP 原生樣式 class
+// 按鈕：.button .button-primary .button-secondary .button-link .button-link-delete
+// 表單：.form-table .regular-text .large-text
+// 通知：.notice .notice-success .notice-warning .notice-error .notice-info .is-dismissible
+// 卡片：.postbox .inside
+// 標題：.wp-heading-inline .page-title-action
+```
+
+```php
+// 典型 Settings 頁面輸出範例（使用 WP 原生樣式）
+function my_plugin_options_page() {
+    ?>
+    <div class="wrap">
+        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+
+        <div class="notice notice-info">
+            <p>說明文字</p>
+        </div>
+
+        <form method="post" action="options.php">
+            <?php settings_fields('my_plugin_options'); ?>
+            <?php do_settings_sections('my_plugin'); ?>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><label for="api_key">API 金鑰</label></th>
+                    <td>
+                        <input type="text" id="api_key" name="my_plugin_settings[api_key]"
+                               class="regular-text" value="<?php echo esc_attr($api_key); ?>">
+                        <p class="description">取得 API 金鑰請至...</p>
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+```
+
+```php
+// enqueue 自訂後台樣式（僅補充 WP 原生不足的部分，以純 CSS 撰寫）
+function my_plugin_enqueue_admin_styles($hook) {
+    if ($hook !== 'settings_page_my-plugin') return;
+    wp_enqueue_style('my-plugin-admin', MY_PLUGIN_URL . 'assets/css/admin.css', [], MY_PLUGIN_VERSION);
+}
+add_action('admin_enqueue_scripts', 'my_plugin_enqueue_admin_styles');
+```
+
+```css
+/* assets/css/admin.css — 僅補充 WP 原生不足的自訂樣式，不引入外部框架 */
+/* ⚠️ 不使用 Tailwind Preflight（會覆蓋 wp-admin 既有樣式） */
+
+.my-plugin-wrap .settings-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+```
+
+---
+
+### 複雜後台 UI（React）：@wordpress/components
 
 ```bash
-# 1. 檢查 package.json 已安裝的 UI 框架
-cat package.json 2>/dev/null | grep -E "tailwindcss|bootstrap|bulma|uikit|foundation"
+npm install @wordpress/components @wordpress/element
+```
 
-# 2. 檢查外掛主程式或 enqueue 是否引入外部框架
-grep -E "bootstrap|tailwind|bulma|uikit" *.php admin/*.php 2>/dev/null
+```jsx
+import { Button, TextControl, Notice, Panel, PanelBody } from '@wordpress/components'
+import { useState } from '@wordpress/element'
 
-# 3. 檢查現有 Admin 樣式檔案
-ls assets/css/ src/scss/ admin/css/ 2>/dev/null
+function PluginSettings() {
+    const [apiKey, setApiKey] = useState('')
 
-# 4. 檢查 HTML class 命名風格
-grep -r 'class="' admin/ templates/ --include="*.php" 2>/dev/null | head -5
+    return (
+        <Panel>
+            <PanelBody title="API 設定" initialOpen={true}>
+                <TextControl
+                    label="API 金鑰"
+                    value={apiKey}
+                    onChange={setApiKey}
+                />
+                <Button variant="primary" onClick={handleSave}>
+                    儲存設定
+                </Button>
+            </PanelBody>
+        </Panel>
+    )
+}
+```
+
+---
+
+### 前台輸出：Tailwind + PostCSS + SCSS
+
+**新增功能至既有外掛前，先偵測現有 UI 工具：**
+
+```bash
+# 檢查 package.json 已安裝的 UI 框架
+cat package.json 2>/dev/null | grep -E "tailwindcss|bootstrap|bulma"
+
+# 檢查前台 enqueue 是否已引入框架
+grep -E "bootstrap|tailwind|bulma" *.php templates/ --include="*.php" 2>/dev/null
 ```
 
 | 偵測結果 | 做法 |
 |---------|------|
 | 找到 `tailwindcss` | 延續 Tailwind，自訂以 SCSS + `@apply` 撰寫 |
 | 找到 `bootstrap` | 延續 Bootstrap，自訂以 SCSS 撰寫並編譯 |
-| 找到其他框架 | 延續該框架，自訂以 SCSS 撰寫 |
+| 找到其他框架 | 延續該框架 |
 | 未找到任何框架 | ↓ 使用以下預設設定 |
-
----
-
-> **預設原則（新外掛 / 無既有 UI 框架）**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer sass
@@ -322,44 +484,21 @@ npx tailwindcss init
 ```js
 // tailwind.config.js
 module.exports = {
-  content: [
-    './admin/**/*.php',
-    './templates/**/*.php',
-    './js/**/*.js'
-  ],
+  content: ['./templates/**/*.php', './js/**/*.js'],
   theme: { extend: {} },
   plugins: []
 }
 ```
 
-```js
-// postcss.config.js
-module.exports = {
-  plugins: { tailwindcss: {}, autoprefixer: {} }
-}
-```
-
 ```scss
-// src/scss/admin.scss — Admin UI 自訂樣式
+// src/scss/frontend.scss
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-  .my-plugin-wrap {
-    @apply mx-auto max-w-4xl p-6;
-
-    .settings-card {
-      @apply rounded-lg border border-gray-200 bg-white p-5 shadow-sm;
-
-      &__title {
-        @apply mb-4 text-base font-semibold text-gray-800;
-      }
-    }
-
-    .btn-save {
-      @apply rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700;
-    }
+  .my-plugin-card {
+    @apply rounded-lg border border-gray-200 bg-white p-5 shadow-sm;
   }
 }
 ```
@@ -368,20 +507,19 @@ module.exports = {
 // package.json scripts
 {
   "scripts": {
-    "build:css": "sass src/scss/admin.scss | postcss -o assets/css/admin.css --no-map",
-    "watch:css": "sass --watch src/scss/admin.scss:assets/css/admin.css",
-    "build": "npm run build:css"
+    "build:css": "sass src/scss/frontend.scss | postcss -o assets/css/frontend.css --no-map",
+    "watch:css": "sass --watch src/scss/frontend.scss:assets/css/frontend.css"
   }
 }
 ```
 
 ```php
-// 載入編譯後的 Admin CSS
-function my_plugin_enqueue_admin_scripts($hook) {
-    if ($hook !== 'settings_page_my-plugin') return;
-    wp_enqueue_style('my-plugin-admin', MY_PLUGIN_URL . 'assets/css/admin.css', [], MY_PLUGIN_VERSION);
+// 載入前台樣式（僅在有輸出的頁面）
+function my_plugin_enqueue_frontend_styles() {
+    if (!is_page_with_shortcode('my_shortcode')) return;
+    wp_enqueue_style('my-plugin-frontend', MY_PLUGIN_URL . 'assets/css/frontend.css', [], MY_PLUGIN_VERSION);
 }
-add_action('admin_enqueue_scripts', 'my_plugin_enqueue_admin_scripts');
+add_action('wp_enqueue_scripts', 'my_plugin_enqueue_frontend_styles');
 ```
 
 ## AJAX

@@ -7,6 +7,50 @@ description: Chrome 插件開發指南（Manifest V3）。涵蓋插件架構、B
 
 > **重要**：Chrome 已強制使用 Manifest V3（MV3），MV2 將逐步停用。本指南以 MV3 為標準。
 
+## Icon 使用規範
+
+> **原則**：新專案或新功能一律使用 [Lucide](https://lucide.dev/)，**禁止使用 emoji 代替 icon**。
+
+### 既有專案：先偵測現有 icon 庫
+
+```bash
+# 1. 檢查 package.json 已安裝的 icon 庫
+cat package.json | grep -E "lucide|heroicons|phosphor|react-icons|@fortawesome|feather-icons|@tabler/icons"
+
+# 2. 檢查 HTML / JS 是否有 CDN 引入
+grep -r "lucide\|fontawesome\|heroicons\|iconify\|feather" --include="*.html" --include="*.js" . 2>/dev/null
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `lucide-react` / `lucide` | 延續使用 Lucide |
+| 找到其他 icon 庫（heroicons / phosphor / font-awesome 等） | 延續使用該庫 |
+| 未找到任何 icon 庫 | 安裝 Lucide（見下方） |
+
+> **找不到合適 icon 時**：若在既有 icon 庫中無法找到符合情境的圖示，**主動告知開發者**，並推薦 Lucide 中的替代選項，由開發者決定是否採用。
+
+### 安裝 Lucide（新專案預設）
+
+```bash
+npm install lucide  # Vanilla JS / Node
+```
+
+```html
+<!-- CDN（Chrome 插件 Popup / Options 頁面） -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<i data-lucide="settings"></i>
+<i data-lucide="search"></i>
+<script>lucide.createIcons();</script>
+```
+
+```js
+// ES Module（若使用打包工具）
+import { createIcons, Search, Settings, X } from 'lucide'
+createIcons({ icons: { Search, Settings, X } })
+```
+
+---
+
 ## 專案結構
 
 ```

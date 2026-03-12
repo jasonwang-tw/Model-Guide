@@ -5,6 +5,53 @@ description: 網站開發指南。涵蓋前端技術選型（Next.js/Astro/Vanil
 
 # 網站開發指南
 
+## Icon 使用規範
+
+> **原則**：新專案或新功能一律使用 [Lucide](https://lucide.dev/)，**禁止使用 emoji 代替 icon**。
+
+### 既有專案：先偵測現有 icon 庫
+
+```bash
+# 1. 檢查 package.json 已安裝的 icon 庫
+cat package.json | grep -E "lucide|heroicons|phosphor|react-icons|@fortawesome|feather-icons|@tabler/icons"
+
+# 2. 檢查元件是否有引入 icon
+grep -r "lucide\|heroicons\|phosphor\|FontAwesome\|@tabler" src/ app/ components/ --include="*.ts" --include="*.tsx" --include="*.astro" 2>/dev/null | head -5
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `lucide-react` | 延續使用 Lucide |
+| 找到其他 icon 庫（heroicons / phosphor / font-awesome 等） | 延續使用該庫 |
+| 未找到任何 icon 庫 | 安裝 Lucide（見下方） |
+
+> **找不到合適 icon 時**：若在既有 icon 庫中無法找到符合情境的圖示，**主動告知開發者**，並推薦 Lucide 中的替代選項，由開發者決定是否採用。
+
+### 安裝 Lucide（新專案預設）
+
+```bash
+npm install lucide-react   # React / Next.js
+npm install lucide         # Astro / Vanilla JS
+```
+
+```tsx
+// React / Next.js
+import { Search, ShoppingCart, User, Menu, X, ChevronRight } from 'lucide-react'
+
+<Search size={20} className="text-gray-500" />
+<ShoppingCart size={24} strokeWidth={1.5} />
+```
+
+```astro
+---
+// Astro
+import { Search } from 'lucide'
+---
+<!-- 或直接使用 lucide-react with client:load -->
+```
+
+---
+
 ## 技術選型
 
 ### 電商網站

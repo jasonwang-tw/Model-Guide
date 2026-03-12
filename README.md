@@ -253,6 +253,16 @@ CLAUDE.md 已定義完整的自動監控規則：
 
 ## Changelog
 
+## [1.4.1] - 2026-03-12
+### Changed
+- `skills/wordpress-plugin-dev`：CSS 工具鏈改為依場景分流——後台 UI 改用 WP 原生樣式（避免 Tailwind Preflight 衝突）、複雜後台 React UI 使用 `@wordpress/components`、前台輸出維持 Tailwind + SCSS；Icon 規範同步調整，後台使用 Dashicons，前台使用 Lucide
+
+## [1.4.0] - 2026-03-12
+### Added
+- 所有開發類 Skills 新增 **Icon 使用規範**：
+  - Web 類（`chrome-extension-dev`、`website-dev`、`wordpress-plugin-dev`、`wordpress-theme-dev`、`woocommerce-dev`）：新專案 / 新功能一律使用 [Lucide](https://lucide.dev/)，禁止以 emoji 代替 icon；既有專案先偵測現有 icon 庫並延續；找不到合適 icon 時主動告知並推薦替代選項
+  - Apple 類（`ios-dev`、`macos-dev`）：一律使用 SF Symbols，禁止以 emoji 代替 icon；找不到合適圖示時主動告知並推薦替代選項
+
 ## [1.3.1] - 2026-03-12
 ### Changed
 - `skills/chrome-extension-dev`：CSS 工具鏈新增既有專案偵測邏輯，延續現有 UI 框架，無則預設 Tailwind + PostCSS + SCSS

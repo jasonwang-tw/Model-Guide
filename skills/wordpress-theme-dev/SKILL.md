@@ -5,6 +5,55 @@ description: WordPress 主題開發指南。涵蓋模板層級、鉤子、模板
 
 # WordPress 主題開發指南
 
+## Icon 使用規範
+
+> **原則**：新專案或新功能一律使用 [Lucide](https://lucide.dev/)，**禁止使用 emoji 代替 icon**。
+
+### 既有專案：先偵測現有 icon 庫
+
+```bash
+# 1. 檢查 package.json 已安裝的 icon 庫
+cat package.json 2>/dev/null | grep -E "lucide|heroicons|phosphor|react-icons|@fortawesome|feather-icons|@tabler/icons"
+
+# 2. 檢查 functions.php / style.css 是否有引入 icon 庫
+grep -rE "lucide|fontawesome|heroicons|feather" functions.php style.css template-parts/ --include="*.php" 2>/dev/null | head -5
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `lucide-react` / `lucide` | 延續使用 Lucide |
+| 找到 `font-awesome` / `heroicons` 等 | 延續使用該庫 |
+| 未找到任何 icon 庫 | 使用 Lucide CDN（見下方） |
+
+> **找不到合適 icon 時**：若在既有 icon 庫中無法找到符合情境的圖示，**主動告知開發者**，並推薦 Lucide 中的替代選項，由開發者決定是否採用。
+
+### 安裝 Lucide（新專案預設）
+
+```php
+// functions.php — 透過 wp_enqueue_scripts 載入
+function theme_enqueue_lucide() {
+    wp_enqueue_script(
+        'lucide',
+        'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
+        [],
+        null,
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'theme_enqueue_lucide');
+```
+
+```html
+<!-- 在模板中使用 -->
+<i data-lucide="search"></i>
+<i data-lucide="menu"></i>
+<i data-lucide="shopping-cart"></i>
+<?php wp_footer(); // 確保 lucide.js 已載入 ?>
+<script>lucide.createIcons();</script>
+```
+
+---
+
 ## 模板層級（Template Hierarchy）
 
 WordPress 模板載入順序（從最具體到最通用）：
