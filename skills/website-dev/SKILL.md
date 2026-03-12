@@ -355,6 +355,85 @@ ECPAY_HASH_KEY="..."
 ECPAY_HASH_IV="..."
 ```
 
+## CSS 工具鏈設定
+
+> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。PostCSS 負責 autoprefixer 等後處理。
+
+```bash
+npm install -D tailwindcss postcss autoprefixer sass
+npx tailwindcss init -p  # 同時產生 postcss.config.js
+```
+
+```js
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './src/**/*.{astro,html,ts,tsx}'
+  ],
+  theme: { extend: {} },
+  plugins: []
+}
+```
+
+```js
+// postcss.config.js（-p 旗標自動產生）
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+```
+
+```scss
+// src/styles/globals.scss — 取代純 CSS globals
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 自訂設計系統元件（SCSS + @apply，不用手寫 CSS 屬性）
+@layer components {
+  .btn {
+    @apply inline-flex items-center rounded-lg px-5 py-2.5 text-sm font-medium transition-colors;
+
+    &-primary {
+      @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+
+    &-outline {
+      @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+    }
+  }
+
+  .card {
+    @apply rounded-2xl border border-gray-100 bg-white p-6 shadow-sm;
+
+    &-title {
+      @apply text-xl font-bold tracking-tight text-gray-900;
+    }
+  }
+}
+
+// 自訂 CSS 變數（設計 token）
+@layer base {
+  :root {
+    --brand: theme('colors.blue.600');
+    --brand-hover: theme('colors.blue.700');
+  }
+}
+```
+
+```tsx
+// Next.js：在 app/layout.tsx 引入
+import '@/src/styles/globals.scss'
+
+// Astro：在 src/layouts/Base.astro 引入
+// <style is:global>@import '../styles/globals.scss';</style>
+```
+
 ## 快速參考
 
 | 需求 | 工具 |

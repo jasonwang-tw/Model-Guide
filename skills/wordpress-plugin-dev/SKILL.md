@@ -283,6 +283,80 @@ function my_plugin_get_records($status = 'pending') {
 }
 ```
 
+## CSS 工具鏈（Admin UI / 前台樣式）
+
+> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
+
+```bash
+npm install -D tailwindcss postcss autoprefixer sass
+npx tailwindcss init
+```
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    './admin/**/*.php',
+    './templates/**/*.php',
+    './js/**/*.js'
+  ],
+  theme: { extend: {} },
+  plugins: []
+}
+```
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: { tailwindcss: {}, autoprefixer: {} }
+}
+```
+
+```scss
+// src/scss/admin.scss — Admin UI 自訂樣式
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .my-plugin-wrap {
+    @apply mx-auto max-w-4xl p-6;
+
+    .settings-card {
+      @apply rounded-lg border border-gray-200 bg-white p-5 shadow-sm;
+
+      &__title {
+        @apply mb-4 text-base font-semibold text-gray-800;
+      }
+    }
+
+    .btn-save {
+      @apply rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700;
+    }
+  }
+}
+```
+
+```json
+// package.json scripts
+{
+  "scripts": {
+    "build:css": "sass src/scss/admin.scss | postcss -o assets/css/admin.css --no-map",
+    "watch:css": "sass --watch src/scss/admin.scss:assets/css/admin.css",
+    "build": "npm run build:css"
+  }
+}
+```
+
+```php
+// 載入編譯後的 Admin CSS
+function my_plugin_enqueue_admin_scripts($hook) {
+    if ($hook !== 'settings_page_my-plugin') return;
+    wp_enqueue_style('my-plugin-admin', MY_PLUGIN_URL . 'assets/css/admin.css', [], MY_PLUGIN_VERSION);
+}
+add_action('admin_enqueue_scripts', 'my_plugin_enqueue_admin_scripts');
+```
+
 ## AJAX
 
 ```php

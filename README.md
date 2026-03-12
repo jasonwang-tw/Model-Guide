@@ -253,6 +253,13 @@ CLAUDE.md 已定義完整的自動監控規則：
 
 ## Changelog
 
+## [1.3.0] - 2026-03-12
+### Changed
+- `skills/chrome-extension-dev`：新增 CSS 工具鏈設定（TailwindCSS + PostCSS + SCSS），更新檔案結構加入 src/styles/
+- `skills/wordpress-theme-dev`：新增 CSS 工具鏈設定（TailwindCSS + PostCSS + SCSS），樣式載入改為引用編譯產出
+- `skills/wordpress-plugin-dev`：新增 CSS 工具鏈設定（TailwindCSS + PostCSS + SCSS），加入 Admin UI 樣式範例
+- `skills/website-dev`：補充 PostCSS config 與 SCSS 自訂元件完整範例
+
 ## [1.2.0] - 2026-03-11
 ### Added
 - `skills/service-impact-assessment`：服務安裝/刪除/修改前的深度影響評估 Skill

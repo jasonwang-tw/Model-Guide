@@ -18,16 +18,86 @@ WordPress 模板載入順序（從最具體到最通用）：
 | 搜尋 | `search.php` → `index.php` |
 | 404 | `404.php` → `index.php` |
 
+## CSS 工具鏈設定
+
+> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。PostCSS 負責 autoprefixer 等後處理優化。
+
+```bash
+npm install -D tailwindcss postcss autoprefixer sass
+npx tailwindcss init
+```
+
+```js
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './**/*.php',
+    './template-parts/**/*.php',
+    './js/**/*.js'
+  ],
+  theme: { extend: {} },
+  plugins: []
+}
+```
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+```
+
+```scss
+// src/scss/main.scss — 以 SCSS 撰寫自訂樣式，由 PostCSS 編譯
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 自訂元件（使用 @layer + @apply + SCSS 巢狀）
+@layer components {
+  .card {
+    @apply rounded-xl border border-gray-200 p-6 shadow-sm;
+
+    &__title {
+      @apply text-xl font-bold text-gray-900;
+    }
+
+    &__body {
+      @apply mt-3 text-gray-600;
+    }
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700;
+  }
+}
+```
+
+```json
+// package.json scripts
+{
+  "scripts": {
+    "build:css": "sass src/scss/main.scss | postcss -o assets/css/main.css --no-map",
+    "watch:css": "sass --watch src/scss/main.scss:assets/css/main.css",
+    "build": "npm run build:css && npm run build:js"
+  }
+}
+```
+
 ## 腳本與樣式載入
 
 ```php
 // 正確做法：使用 wp_enqueue_scripts 鉤子
 function theme_enqueue_scripts() {
-    // 主要樣式（帶版本號避免快取問題）
-    wp_enqueue_style('main', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+    // 載入 Tailwind + SCSS 編譯產出的主要樣式
+    wp_enqueue_style('main', get_template_directory_uri() . '/assets/css/main.css', [], wp_get_theme()->get('Version'));
 
-    // 主要 JS（依賴 jquery，放在 footer）
-    wp_enqueue_script('main', get_template_directory_uri() . '/js/main.js', ['jquery'], '1.0', true);
+    // 主要 JS（放在 footer）
+    wp_enqueue_script('main', get_template_directory_uri() . '/js/main.js', [], '1.0', true);
 
     // 傳遞 PHP 資料給 JS
     wp_localize_script('main', 'themeData', [
@@ -39,9 +109,6 @@ add_action('wp_enqueue_scripts', 'theme_enqueue_scripts');
 
 // 條件載入（只在需要的頁面載入）
 function theme_conditional_scripts() {
-    if (is_front_page()) {
-        wp_enqueue_style('home', get_template_directory_uri() . '/css/home.css');
-    }
     if (is_singular('product')) {
         wp_enqueue_script('product-gallery', get_template_directory_uri() . '/js/gallery.js', [], '1.0', true);
     }

@@ -17,10 +17,17 @@ my-extension/
 ├── popup/
 │   ├── popup.html
 │   ├── popup.js
-│   └── popup.css
+│   └── popup.css          # 由 Tailwind + SCSS 編譯產出
 ├── options/
 │   ├── options.html
 │   └── options.js
+├── src/
+│   └── styles/
+│       ├── popup.scss     # 自訂樣式（以 SCSS 撰寫）
+│       └── content.scss   # Content script 樣式
+├── tailwind.config.js
+├── postcss.config.js
+├── package.json
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
@@ -28,6 +35,69 @@ my-extension/
 └── _locales/              # 多語系（可選）
     └── zh_TW/
         └── messages.json
+```
+
+## CSS 工具鏈設定
+
+> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
+
+```bash
+npm install -D tailwindcss postcss autoprefixer sass
+npx tailwindcss init
+```
+
+```js
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./popup/**/*.html', './options/**/*.html'],
+  theme: { extend: {} },
+  plugins: []
+}
+```
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+```
+
+```scss
+// src/styles/popup.scss
+// 1. 引入 Tailwind 指令
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 2. 自訂元件以 SCSS 撰寫（不用純 CSS）
+@layer components {
+  .ext-card {
+    @apply rounded-lg border border-gray-200 p-4 shadow-sm;
+
+    &__title {
+      @apply text-sm font-semibold text-gray-800;
+    }
+
+    &__body {
+      @apply mt-2 text-xs text-gray-600;
+    }
+  }
+}
+```
+
+```json
+// package.json scripts
+{
+  "scripts": {
+    "build:css": "sass src/styles/popup.scss | postcss -o popup/popup.css",
+    "watch:css": "sass --watch src/styles/popup.scss | postcss -o popup/popup.css",
+    "build": "npm run build:css"
+  }
+}
 ```
 
 ## manifest.json
