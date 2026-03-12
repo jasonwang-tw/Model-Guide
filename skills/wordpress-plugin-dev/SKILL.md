@@ -285,7 +285,34 @@ function my_plugin_get_records($status = 'pending') {
 
 ## CSS 工具鏈（Admin UI / 前台樣式）
 
-> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
+### 既有專案：優先偵測現有 UI 工具
+
+**新增功能至既有外掛前，先執行以下偵測，延續現有工具；若無則使用預設（Tailwind + PostCSS + SCSS）。**
+
+```bash
+# 1. 檢查 package.json 已安裝的 UI 框架
+cat package.json 2>/dev/null | grep -E "tailwindcss|bootstrap|bulma|uikit|foundation"
+
+# 2. 檢查外掛主程式或 enqueue 是否引入外部框架
+grep -E "bootstrap|tailwind|bulma|uikit" *.php admin/*.php 2>/dev/null
+
+# 3. 檢查現有 Admin 樣式檔案
+ls assets/css/ src/scss/ admin/css/ 2>/dev/null
+
+# 4. 檢查 HTML class 命名風格
+grep -r 'class="' admin/ templates/ --include="*.php" 2>/dev/null | head -5
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `tailwindcss` | 延續 Tailwind，自訂以 SCSS + `@apply` 撰寫 |
+| 找到 `bootstrap` | 延續 Bootstrap，自訂以 SCSS 撰寫並編譯 |
+| 找到其他框架 | 延續該框架，自訂以 SCSS 撰寫 |
+| 未找到任何框架 | ↓ 使用以下預設設定 |
+
+---
+
+> **預設原則（新外掛 / 無既有 UI 框架）**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer sass

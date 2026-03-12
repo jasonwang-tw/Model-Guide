@@ -39,7 +39,31 @@ my-extension/
 
 ## CSS 工具鏈設定
 
-> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
+### 既有專案：優先偵測現有 UI 工具
+
+**新增功能至既有專案前，先執行以下偵測，延續現有工具；若無則使用預設（Tailwind + PostCSS + SCSS）。**
+
+```bash
+# 1. 檢查 package.json 已安裝的 UI 框架
+cat package.json | grep -E "tailwindcss|bootstrap|bulma|uikit|foundation|daisyui|chakra|antd|mui"
+
+# 2. 檢查 HTML / JS 是否有 CDN 引入
+grep -r "cdn.jsdelivr\|unpkg.com\|bootstrap\|tailwind\|bulma" --include="*.html" --include="*.js" .
+
+# 3. 檢查現有 CSS class 風格
+grep -r 'class="' popup/ --include="*.html" | head -5
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `tailwindcss` | 延續 Tailwind，自訂部分以 SCSS 撰寫 |
+| 找到 `bootstrap` | 延續 Bootstrap，自訂部分以 SCSS 撰寫並編譯 |
+| 找到其他框架（bulma / uikit 等） | 延續該框架，自訂以 SCSS 撰寫 |
+| 未找到任何框架 | ↓ 使用以下預設設定 |
+
+---
+
+> **預設原則（新專案 / 無既有 UI 框架）**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer sass

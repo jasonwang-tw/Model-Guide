@@ -253,6 +253,13 @@ CLAUDE.md 已定義完整的自動監控規則：
 
 ## Changelog
 
+## [1.3.1] - 2026-03-12
+### Changed
+- `skills/chrome-extension-dev`：CSS 工具鏈新增既有專案偵測邏輯，延續現有 UI 框架，無則預設 Tailwind + PostCSS + SCSS
+- `skills/wordpress-theme-dev`：CSS 工具鏈新增既有專案偵測邏輯（同上）
+- `skills/wordpress-plugin-dev`：CSS 工具鏈新增既有專案偵測邏輯（同上）
+- `skills/website-dev`：CSS 工具鏈新增既有專案偵測邏輯，涵蓋 shadcn / MUI / Chakra UI 等元件庫
+
 ## [1.3.0] - 2026-03-12
 ### Changed
 - `skills/chrome-extension-dev`：新增 CSS 工具鏈設定（TailwindCSS + PostCSS + SCSS），更新檔案結構加入 src/styles/

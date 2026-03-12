@@ -20,7 +20,34 @@ WordPress 模板載入順序（從最具體到最通用）：
 
 ## CSS 工具鏈設定
 
-> **原則**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。PostCSS 負責 autoprefixer 等後處理優化。
+### 既有專案：優先偵測現有 UI 工具
+
+**新增功能至既有主題前，先執行以下偵測，延續現有工具；若無則使用預設（Tailwind + PostCSS + SCSS）。**
+
+```bash
+# 1. 檢查 package.json 已安裝的 UI 框架
+cat package.json 2>/dev/null | grep -E "tailwindcss|bootstrap|bulma|uikit|foundation|daisyui"
+
+# 2. 檢查 functions.php 是否有 CDN 或外部樣式引入
+grep -E "bootstrap|tailwind|bulma|uikit|foundation" functions.php style.css 2>/dev/null
+
+# 3. 檢查模板中的 class 命名風格
+grep -r 'class="' template-parts/ --include="*.php" 2>/dev/null | head -5
+
+# 4. 檢查現有 CSS 前綴（BEM / utility-first 等）
+ls assets/css/ src/scss/ 2>/dev/null
+```
+
+| 偵測結果 | 做法 |
+|---------|------|
+| 找到 `tailwindcss` | 延續 Tailwind，自訂以 SCSS + `@apply` 撰寫 |
+| 找到 `bootstrap` | 延續 Bootstrap，自訂以 SCSS 撰寫並編譯 |
+| 找到其他框架（bulma / uikit 等） | 延續該框架，自訂以 SCSS 撰寫 |
+| 未找到任何框架 | ↓ 使用以下預設設定 |
+
+---
+
+> **預設原則（新主題 / 無既有 UI 框架）**：所有樣式一律透過 TailwindCSS 撰寫；自訂元件以 SCSS 撰寫並編譯，不直接寫純 CSS。PostCSS 負責 autoprefixer 等後處理優化。
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer sass
