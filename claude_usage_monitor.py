@@ -2,7 +2,7 @@
 """
 Claude Code Usage Monitor
 監控 current session usage，達到 95% 時輸出警告。
-校準基準：Pro 方案 ≈ 13,087,950 tokens / 5hr session（實測 261,759 tokens = 2%）
+校準基準：Pro 方案 ≈ 53,802,637 tokens / 5hr session（實測 16,140,791 tokens = 30%，UI 實測 2026-03-15）
 """
 
 import json
@@ -11,7 +11,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 
-PRO_SESSION_LIMIT = 13_087_950  # 校準自 261759 tokens = 2%（UI 實測）
+PRO_SESSION_LIMIT = 53_802_637  # 校準自 16,140,791 tokens = 30%（UI 實測 2026-03-15）
 WARN_THRESHOLD = 0.95           # 95% 警戒線
 RESET_THRESHOLD = 0.05          # 5% 以下視為已重置
 
