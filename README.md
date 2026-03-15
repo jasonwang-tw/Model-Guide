@@ -227,7 +227,7 @@ python3 claude_usage_monitor.py
   "status": "ok",
   "pct": 45.2,
   "tokens": 599754,
-  "limit": 1327000,
+  "limit": 13087950,
   "remaining_minutes": 180
 }
 [OK] Current session usage: 45.2%
@@ -252,6 +252,10 @@ CLAUDE.md 已定義完整的自動監控規則：
 6. 重複直到任務完成
 
 ## Changelog
+
+## [1.4.2] - 2026-03-15
+### Changed
+- `claude_usage_monitor.py`：校準 `PRO_SESSION_LIMIT` 從 1,327,000 更新為 13,087,950（實測 261,759 tokens = 2%，與 UI 數據對齊）
 
 ## [1.4.1] - 2026-03-12
 ### Changed
