@@ -27,6 +27,24 @@ grep -rE "lucide|fontawesome|heroicons|feather" functions.php style.css template
 
 > **找不到合適 icon 時**：若在既有 icon 庫中無法找到符合情境的圖示，**主動告知開發者**，並推薦 Lucide 中的替代選項，由開發者決定是否採用。
 
+### Buy Me a Coffee 按鈕規範
+
+Buy Me a Coffee 按鈕同樣須遵守 icon 規範，**禁止使用 ☕ emoji**，改用官方提供的 SVG 圖示或 Lucide 替代方案：
+
+| 做法 | 說明 |
+|------|------|
+| **官方 SVG**（推薦） | 使用 [Buy Me a Coffee 官方 Brand Assets](https://www.buymeacoffee.com/brand) 提供的 SVG logo |
+| **Lucide 替代** | 使用 `<Coffee />` icon（Lucide CDN 或 `lucide-react` 內建） |
+| ❌ 禁止 | 直接用 ☕ emoji 作為按鈕圖示 |
+
+```html
+<!-- ✅ 正確：使用 Lucide CDN -->
+<a href="https://buymeacoffee.com/jasonwang0052" target="_blank" rel="noopener noreferrer">
+  <i data-lucide="coffee"></i>
+  Buy Me a Coffee
+</a>
+```
+
 ### 安裝 Lucide（新專案預設）
 
 ```php

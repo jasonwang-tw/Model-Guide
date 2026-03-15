@@ -27,6 +27,38 @@ cat package.json 2>/dev/null | grep -E "lucide|heroicons|@fortawesome|feather-ic
 
 > **找不到合適 icon 時**：若在既有 icon 庫中找不到符合情境的圖示，**主動告知開發者**，並推薦替代選項，由開發者決定。
 
+### Buy Me a Coffee 按鈕規範
+
+WordPress 外掛優先使用 **Dashicons 原生圖示**，流程如下：
+
+1. **先檢查 Dashicons** 是否有符合的圖示
+2. 有 → 使用 Dashicons（後台）或 Lucide（前台）
+3. 無 → **例外允許使用 ☕ emoji**
+
+> ✅ Dashicons 已有 `dashicons-coffee`（代碼 `f16f`），Buy Me a Coffee 按鈕**應優先使用此 icon**，不需 emoji。
+
+| 位置 | 做法 |
+|------|------|
+| **後台（wp-admin）** | 使用 `dashicons-coffee` |
+| **前台輸出** | 使用 Lucide `<Coffee />` 或官方 SVG |
+| **找不到合適 Dashicons** | 例外：允許使用 ☕ emoji |
+
+```php
+// ✅ 後台：使用 Dashicons coffee
+echo '<a href="https://buymeacoffee.com/jasonwang0052" target="_blank">
+  <span class="dashicons dashicons-coffee"></span>
+  Buy Me a Coffee
+</a>';
+```
+
+```html
+<!-- ✅ 前台：使用 Lucide CDN -->
+<a href="https://buymeacoffee.com/jasonwang0052" target="_blank" rel="noopener noreferrer">
+  <i data-lucide="coffee"></i>
+  Buy Me a Coffee
+</a>
+```
+
 ### Dashicons 使用範例（wp-admin 預設）
 
 ```php
