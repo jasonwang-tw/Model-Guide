@@ -93,6 +93,7 @@
 | iOS / macOS App 測試 | Skill: `test-apple` |
 | 網站（Next.js/Astro/Web）測試 | Skill: `test-web` |
 | 開始新專案、專案缺少 README | Skill: `project-init` |
+| 查看截圖、分析 UI、比對畫面差異（macOS） | Skill: `png` |
 
 ### 執行原則
 

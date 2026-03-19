@@ -27,6 +27,7 @@ Model-Guide/
     ├── woocommerce-dev/              # WooCommerce 開發
     ├── wordpress-plugin-dev/         # WordPress 外掛開發
     ├── wordpress-theme-dev/          # WordPress 主題開發
+    ├── png/                          # 桌面截圖讀取（macOS）
     ├── service-impact-assessment/    # 服務安裝/刪除影響評估
     └── wp-performance-optimization/  # WordPress 效能優化
 ```
@@ -58,6 +59,7 @@ Model-Guide/
 | `service-impact-assessment` | 服務安裝/刪除/修改前的影響評估，涵蓋優缺點、環境影響、相依衝突、移除可行性 |
 | `wordpress-plugin-dev` | WordPress 外掛開發，涵蓋 Settings API、Shortcode、CPT、WP-Cron |
 | `wordpress-theme-dev` | WordPress 主題開發，涵蓋模板層級、鉤子、模板標籤 |
+| `png` | 桌面截圖讀取（macOS），找出最新截圖並分析，支援指定數量與文字提問 |
 | `wp-performance-optimization` | WordPress 效能優化，根據 PageSpeed 數據診斷並修復前後端效能問題 |
 
 ## CLAUDE.md 全域規則
@@ -252,6 +254,10 @@ CLAUDE.md 已定義完整的自動監控規則：
 6. 重複直到任務完成
 
 ## Changelog
+
+## [1.5.0] - 2026-03-18
+### Added
+- `skills/png`：桌面截圖讀取 Skill（macOS），支援讀取最新 N 張截圖、附帶文字提問直接回答
 
 ## [1.4.2] - 2026-03-15
 ### Changed
