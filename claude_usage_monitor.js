@@ -14,6 +14,13 @@ const WARN_THRESHOLD = 95;  // 95% 警戒線
 const RESET_THRESHOLD = 5;  // 5% 以下視為已重置
 const API_URL = "https://api.anthropic.com/api/oauth/usage";
 
+// statusline.sh 快取路徑（Windows bash /tmp → AppData\Local\Temp）
+const STATUSLINE_CACHE = path.join(
+  process.env.TEMP || process.env.TMP || os.tmpdir(),
+  "claude",
+  "statusline-usage-cache.json"
+);
+
 function getOAuthToken() {
   // 1. 環境變數
   const envToken = process.env.CLAUDE_CODE_OAUTH_TOKEN;
@@ -64,6 +71,15 @@ function fetchUsage(token) {
   });
 }
 
+function readStatuslineCache() {
+  try {
+    const raw = fs.readFileSync(STATUSLINE_CACHE, "utf8");
+    const j = JSON.parse(raw);
+    if (j?.five_hour?.utilization !== undefined) return j;
+  } catch (_) {}
+  return null;
+}
+
 async function checkUsage() {
   const token = getOAuthToken();
   if (!token) {
@@ -74,7 +90,13 @@ async function checkUsage() {
   try {
     data = await fetchUsage(token);
   } catch (e) {
-    return { status: `error: ${e.message}`, pct: 0, weekly_pct: 0 };
+    // 429 或網路錯誤時，改讀 statusline 快取
+    const cached = readStatuslineCache();
+    if (cached) {
+      data = cached;
+    } else {
+      return { status: `error: ${e.message}`, pct: 0, weekly_pct: 0 };
+    }
   }
 
   // utilization 是整數百分比（例：8 = 8%）
