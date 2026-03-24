@@ -7,7 +7,7 @@ Claude Code 與 Cursor 的自訂 Agents 與 Skills 設定集合，針對 WordPre
 ```
 Model-Guide/
 ├── CLAUDE.md                         # 全域規則（版號/README 自動管理）
-├── claude_usage_monitor.py           # Current session usage 監控腳本
+├── claude_usage_monitor.js           # Current session usage 監控腳本（Node.js）
 ├── agents/
 │   ├── debugger.md                   # 自動除錯專家
 │   ├── developer.md                  # 專案架構規劃與開發引導
@@ -186,40 +186,16 @@ done
 
 ## Current Session Usage 監控腳本
 
-`claude_usage_monitor.py` 自動監控 Claude Code 的 current session usage，搭配 CLAUDE.md 的自動化流程，讓長時間任務在用量達 95% 時自動暫停並總結，重置後自動接續。
+`claude_usage_monitor.js` 直接呼叫 Anthropic OAuth API，取得伺服器端真實用量，搭配 Claude Code Stop hook 實現自動暫停與接續。
 
 ### 前置需求
 
-- Python 3.x
-- Node.js + npx（用於執行 `ccusage`）
-
-### 安裝
-
-```bash
-# clone 後將腳本複製至工作目錄（或直接使用 repo 路徑）
-cp ~/Model-Guide/claude_usage_monitor.py ~/claude_usage_monitor.py
-```
-
-### 校準（首次使用）
-
-腳本內建 Pro 方案校準值。若使用其他方案，需重新校準：
-
-1. 執行 `/usage` 記下目前百分比（例：71%）
-2. 執行以下指令取得目前 token 數：
-   ```bash
-   npx ccusage@latest blocks --json | python3 -c "
-   import json,sys; d=json.load(sys.stdin)
-   b=[x for x in d['blocks'] if x.get('isActive') and not x.get('isGap')]
-   print('tokens:', b[0]['totalTokens']) if b else print('no active block')
-   "
-   ```
-3. 計算上限：`tokens ÷ 百分比 = 方案上限`
-4. 更新腳本第 13 行的 `PRO_SESSION_LIMIT`
+- Node.js（標準庫，無需額外套件）
 
 ### 使用方式
 
 ```bash
-python3 claude_usage_monitor.py
+node ~/Model-Guide/claude_usage_monitor.js
 ```
 
 **輸出範例：**
@@ -227,12 +203,12 @@ python3 claude_usage_monitor.py
 ```json
 {
   "status": "ok",
-  "pct": 45.2,
-  "tokens": 599754,
-  "limit": 13087950,
-  "remaining_minutes": 180
+  "pct": 11,
+  "weekly_pct": 34,
+  "resets_at": "2026-03-24T11:00:00.000Z",
+  "weekly_resets_at": "2026-03-29T08:00:00.000Z"
 }
-[OK] Current session usage: 45.2%
+[OK] 5小時用量：11%　週用量：34%
 ```
 
 **Exit code：**
@@ -240,20 +216,28 @@ python3 claude_usage_monitor.py
 | Code | 意義 |
 |------|------|
 | `0` | 正常（< 95%）或已重置 |
+| `1` | 錯誤（無 token / API 失敗） |
 | `2` | Critical（≥ 95%），應暫停任務 |
 
-### 自動化流程（搭配 CLAUDE.md）
+### Stop Hook 自動化
 
-CLAUDE.md 已定義完整的自動監控規則：
+搭配 `~/.claude/hooks/check_usage.sh`（存於 claude-private repo），由 Claude Code Stop hook 自動觸發：
 
-1. 長時間任務由 **subagent** 執行（`run_in_background: true`）
-2. **Main agent** 每 1 分鐘執行腳本監控用量
-3. 達 95% → 通知 subagent 暫停，條列輸出已完成／未完成項目
-4. 每 30 分鐘偵測重置狀態（pct < 5% 視為已重置）
-5. 重置後自動通知 subagent 接續任務
-6. 重複直到任務完成
+1. 每次 Claude 回應後自動檢查用量
+2. 達 95% → 儲存狀態、輸出警告讓 Claude 暫停並條列進度
+3. 背景倒數等到 `resets_at` 時間，確認重置後響鈴通知
+4. 下次輸入 → hook 偵測重置，注入 resume 訊號讓 Claude 接續任務
 
 ## Changelog
+
+## [1.6.0] - 2026-03-24
+### Changed
+- `claude_usage_monitor.py` 替換為 `claude_usage_monitor.js`（Node.js）
+- 改為直接呼叫 Anthropic OAuth API，移除 ccusage CLI 依賴
+- 新增 429 fallback：rate limit 時自動讀取 statusline.sh 快取
+
+### Removed
+- `claude_usage_monitor.py`（Python + ccusage 版本）
 
 ## [1.5.0] - 2026-03-18
 ### Added
