@@ -107,8 +107,9 @@
 
 ### 工具
 
-監控腳本：`D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.py`
-- 校準基準：Pro 方案 ≈ 1,327,000 tokens / 5hr session（實測 942,168 tokens = 71%）
+監控腳本：
+- macOS：`~/Downloads/ClaudeProject/Model-Guide/claude_usage_monitor.js`
+- Windows：`D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.js`
 - exit code `2` = critical（≥95%）、exit code `0` = 正常或已重置
 
 ### 完整自動化流程
@@ -120,7 +121,10 @@
 
 2. **Main agent 每 1 分鐘執行監控**
    ```bash
-   python3 "D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.py"
+   # macOS
+   node ~/Downloads/ClaudeProject/Model-Guide/claude_usage_monitor.js
+   # Windows
+   node "D:/user profile/jason.wang/Desktop/ClaudeCodeProject/claude_usage_monitor.js"
    ```
    - exit code `0` → 繼續等待
    - exit code `2`（≥95%）→ 執行步驟 3
